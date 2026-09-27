@@ -1,0 +1,500 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>20/10 Lab Experience - Truy Tìm Dung Dịch Kỳ Lạ</title>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --primary: #ec4899;
+      --primary-hover: #db2777;
+      --accent: #06b6d4;
+      --text: #1e293b;
+      --text-muted: #64748b;
+      --border: #e2e8f0;
+      --acid: #ef4444;
+      --base: #eab308;
+      --phenolphthalein: #f43f5e;
+      --disabled: #cbd5e1;
+    }
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: 'Plus Jakarta Sans', sans-serif;
+    }
+
+    body {
+      background-color: var(--bg);
+      color: var(--text);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      min-height: 100vh;
+      padding: 20px;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 800px;
+      background: var(--card-bg);
+      border-radius: 24px;
+      padding: 32px;
+      box-shadow: 0 10px 25px -5px rgba(0, 0, 0, 0.05), 0 8px 10px -6px rgba(0, 0, 0, 0.01);
+      border: 1px solid var(--border);
+    }
+
+    .screen {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      animation: fadeIn 0.4s ease-in-out;
+    }
+
+    .screen.active {
+      display: flex;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    h1, h2 {
+      color: var(--text);
+      margin-bottom: 16px;
+      font-weight: 700;
+    }
+
+    p {
+      color: var(--text-muted);
+      line-height: 1.6;
+      margin-bottom: 24px;
+      font-size: 1.05rem;
+    }
+
+    .dialog-box {
+      background: #f1f5f9;
+      border-left: 4px solid var(--primary);
+      padding: 20px;
+      border-radius: 12px;
+      text-align: left;
+      margin-bottom: 28px;
+      width: 100%;
+      font-size: 1.05rem;
+      line-height: 1.7;
+    }
+
+    .btn {
+      background: var(--primary);
+      color: white;
+      border: none;
+      padding: 14px 28px;
+      font-size: 1rem;
+      font-weight: 600;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      box-shadow: 0 4px 12px rgba(236, 72, 153, 0.25);
+    }
+
+    .btn:hover {
+      background: var(--primary-hover);
+      transform: translateY(-1px);
+      box-shadow: 0 6px 16px rgba(236, 72, 153, 0.35);
+    }
+
+    .btn:disabled {
+      background: var(--disabled);
+      cursor: not-allowed;
+      box-shadow: none;
+      transform: none;
+    }
+
+    /* Lab Elements */
+    .reagents-panel {
+      display: flex;
+      gap: 16px;
+      margin-bottom: 32px;
+      justify-content: center;
+      width: 100%;
+    }
+
+    .reagent-btn {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 18px;
+      background: #ffffff;
+      border: 2px solid var(--border);
+      border-radius: 12px;
+      cursor: pointer;
+      font-weight: 600;
+      transition: all 0.2s ease;
+    }
+
+    .reagent-btn.selected {
+      border-color: var(--primary);
+      background: #fdf2f8;
+      color: var(--primary);
+    }
+
+    .beakers-container {
+      display: flex;
+      justify-content: space-around;
+      gap: 20px;
+      width: 100%;
+      margin-bottom: 32px;
+      flex-wrap: wrap;
+    }
+
+    .beaker-card {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      flex: 1;
+      min-width: 200px;
+      background: #fafafa;
+      padding: 20px;
+      border-radius: 16px;
+      border: 1px solid var(--border);
+      position: relative;
+    }
+
+    .beaker-card.disabled {
+      opacity: 0.5;
+      pointer-events: none;
+      filter: grayscale(80%);
+    }
+
+    .flask {
+      width: 80px;
+      height: 100px;
+      position: relative;
+      cursor: pointer;
+      margin-bottom: 16px;
+      transition: transform 0.2s ease;
+    }
+
+    .flask:hover {
+      transform: scale(1.05);
+    }
+
+    .flask-svg {
+      width: 100%;
+      height: 100%;
+    }
+
+    .liquid {
+      transition: fill 0.5s ease;
+    }
+
+    .beaker-label {
+      font-weight: 700;
+      font-size: 1.2rem;
+      margin-bottom: 8px;
+    }
+
+    .beaker-note {
+      font-size: 0.875rem;
+      color: var(--text-muted);
+      min-height: 48px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-align: center;
+    }
+
+    .guess-btn-container {
+      margin-top: 12px;
+      display: none;
+    }
+
+    .guess-btn-container.visible {
+      display: block;
+    }
+
+    /* Modal */
+    .modal-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(15, 23, 42, 0.4);
+      backdrop-filter: blur(4px);
+      display: none;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      z-index: 100;
+    }
+
+    .modal-overlay.active {
+      display: flex;
+    }
+
+    .modal-content {
+      background: white;
+      padding: 32px;
+      border-radius: 20px;
+      max-width: 480px;
+      width: 100%;
+      text-align: center;
+      box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+    }
+
+    .modal-content p {
+      margin-bottom: 24px;
+      color: var(--text);
+      font-size: 1.1rem;
+    }
+
+    .letter-content {
+      text-align: left;
+      white-space: pre-line;
+      line-height: 1.8;
+      color: var(--text);
+      font-size: 1.05rem;
+      background: #fff5f8;
+      padding: 28px;
+      border-radius: 16px;
+      border: 1px solid #fbcfe8;
+    }
+  </style>
+</head>
+<body>
+
+  <div class="container">
+    <!-- Intro Screen 1 -->
+    <div id="screen-intro-1" class="screen active">
+      <h2>Phòng Thí Nghiệm 🧪</h2>
+      <div class="dialog-box">
+        Trong phòng thí nghiệm có nhiều dung dịch hóa học, tui mới vào check lại thì thấy dư một bình, hình như bình đó không phải là dung dịch hóa học, bình đó chứa một dung dịch "kỳ lạ" mà hôm qua mới có người nào bỏ vào, tui tìm đi tìm lại mới chọn ra được 3 bình khả nghi nhất, mà giờ tui có việc bận mất tiu ù, hay Bình tìm giúp tui nhaaa
+      </div>
+      <button class="btn" onclick="goToScreen('screen-intro-2')">Miễn cưỡng lắm mí giúp đấy nhá</button>
+    </div>
+
+    <!-- Intro Screen 2 -->
+    <div id="screen-intro-2" class="screen">
+      <h2>Cách nhận biết 3 dung dịch mất nhãn 🔬</h2>
+      <div class="dialog-box">
+        Tui có 3 bình dung dịch mất nhãn tự đánh dấu là A, B, C. Trong đó có 2 bình hóa chất thật theo như dự đoán là Phenolphthalein và Methyl Orange và 1 bình chứa dung dịch hết sức "kỳ lạ". Bình dùng 2 thuốc thử là H2SO4 với NaOH để tìm ra bình "kỳ lạ" đó giúp tui với nha
+      </div>
+      <button class="btn" onclick="startLab()">Vô đi, đọc nhiu hết giờ</button>
+    </div>
+
+    <!-- Lab Testing Screen -->
+    <div id="screen-lab" class="screen">
+      <h2>Tiến Hành Thử Dung Dịch 🧫</h2>
+      <p>Chọn thuốc thử bên dưới, sau đó click vào bình muốn kiểm tra nha!</p>
+
+      <div class="reagents-panel">
+        <button id="btn-h2so4" class="reagent-btn" onclick="selectReagent('H2SO4')">
+          💧 H₂SO₄ (Acid)
+        </button>
+        <button id="btn-naoh" class="reagent-btn" onclick="selectReagent('NaOH')">
+          🧪 NaOH (Base)
+        </button>
+      </div>
+
+      <div class="beakers-container">
+        <!-- Beaker A (Methyl Orange) -->
+        <div id="card-A" class="beaker-card">
+          <div class="beaker-label">Bình A</div>
+          <div class="flask" onclick="testBeaker('A')">
+            <svg class="flask-svg" viewBox="0 0 100 120">
+              <path d="M40 10 L60 10 L60 40 L85 100 C90 110 80 115 70 115 L30 115 C20 115 10 110 15 100 L40 40 Z" fill="none" stroke="#64748b" stroke-width="4"/>
+              <path id="liquid-A" class="liquid" d="M18 95 L82 95 C85 105 78 112 70 112 L30 112 C22 112 15 105 18 95 Z" fill="#e2e8f0"/>
+            </svg>
+          </div>
+          <div id="note-A" class="beaker-note">Chưa thử thuốc thử nào</div>
+          <button id="guess-A" class="btn" style="display:none; margin-top:10px; padding: 8px 16px; font-size: 0.875rem;" onclick="makeGuess('A')">Chọn bình này</button>
+        </div>
+
+        <!-- Beaker B (Special / Wishes) -->
+        <div id="card-B" class="beaker-card">
+          <div class="beaker-label">Bình B</div>
+          <div class="flask" onclick="testBeaker('B')">
+            <svg class="flask-svg" viewBox="0 0 100 120">
+              <path d="M40 10 L60 10 L60 40 L85 100 C90 110 80 115 70 115 L30 115 C20 115 10 110 15 100 L40 40 Z" fill="none" stroke="#64748b" stroke-width="4"/>
+              <path id="liquid-B" class="liquid" d="M18 95 L82 95 C85 105 78 112 70 112 L30 112 C22 112 15 105 18 95 Z" fill="#e2e8f0"/>
+            </svg>
+          </div>
+          <div id="note-B" class="beaker-note">Chưa thử thuốc thử nào</div>
+          <button id="guess-B" class="btn" style="display:none; margin-top:10px; padding: 8px 16px; font-size: 0.875rem;" onclick="makeGuess('B')">Chọn bình này</button>
+        </div>
+
+        <!-- Beaker C (Phenolphthalein) -->
+        <div id="card-C" class="beaker-card">
+          <div class="beaker-label">Bình C</div>
+          <div class="flask" onclick="testBeaker('C')">
+            <svg class="flask-svg" viewBox="0 0 100 120">
+              <path d="M40 10 L60 10 L60 40 L85 100 C90 110 80 115 70 115 L30 115 C20 115 10 110 15 100 L40 40 Z" fill="none" stroke="#64748b" stroke-width="4"/>
+              <path id="liquid-C" class="liquid" d="M18 95 L82 95 C85 105 78 112 70 112 L30 112 C22 112 15 105 18 95 Z" fill="#e2e8f0"/>
+            </svg>
+          </div>
+          <div id="note-C" class="beaker-note">Chưa thử thuốc thử nào</div>
+          <button id="guess-C" class="btn" style="display:none; margin-top:10px; padding: 8px 16px; font-size: 0.875rem;" onclick="makeGuess('C')">Chọn bình này</button>
+        </div>
+      </div>
+
+      <div id="guess-master-container" class="guess-btn-container">
+        <p style="margin-bottom: 12px; font-weight: 600; color: var(--primary);">Đã thử đủ thuốc thử! Bạn đoán bình nào không phải là DD Hóa học?</p>
+      </div>
+    </div>
+
+    <!-- Final Letter Screen -->
+    <div id="screen-letter" class="screen">
+      <h2 style="color: var(--primary); margin-bottom: 24px;">20/10 Vui Vẻ Nhé! 🌸</h2>
+      <div class="letter-content">
+Chúc Bình luôn dethuong như hằng số tốc độ ánh sáng
+Có sức khỏe tựa gia tốc trọng trường trên bề mặt Trái Đất
+Learning journey như các công trình của Faraday và Maxwell
+Và đừng quá khắt khe quá với thân
+Kim cương còn có cách sản xuất bằng CVD
+Nên thành công cũng có công thức khác ngoài việc tạo “áp lực bản thân”
+Cuối cùng… chúc bạn nhỏ đang đọc những lời này có một ngày 20/10 vui vẻ nhaa.
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Dialog -->
+  <div id="modal" class="modal-overlay">
+    <div class="modal-content">
+      <p id="modal-text"></p>
+      <button id="modal-btn" class="btn"></button>
+    </div>
+  </div>
+
+  <script>
+    let selectedReagent = null;
+    let testedState = {
+      A: { H2SO4: false, NaOH: false },
+      B: { H2SO4: false, NaOH: false },
+      C: { H2SO4: false, NaOH: false }
+    };
+    let wrongAttempts = 0;
+
+    function goToScreen(screenId) {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      document.getElementById(screenId).classList.add('active');
+    }
+
+    function startLab() {
+      goToScreen('screen-lab');
+    }
+
+    function selectReagent(reagent) {
+      selectedReagent = reagent;
+      document.getElementById('btn-h2so4').classList.toggle('selected', reagent === 'H2SO4');
+      document.getElementById('btn-naoh').classList.toggle('selected', reagent === 'NaOH');
+    }
+
+    function testBeaker(beaker) {
+      if (!selectedReagent) {
+        alert('Vui lòng chọn thuốc thử (H2SO4 hoặc NaOH) trước nha!');
+        return;
+      }
+
+      testedState[beaker][selectedReagent] = true;
+      updateBeakerAppearance(beaker);
+      checkAllTested();
+    }
+
+    function updateBeakerAppearance(beaker) {
+      const liquid = document.getElementById(`liquid-${beaker}`);
+      const note = document.getElementById(`note-${beaker}`);
+
+      if (beaker === 'A') {
+        // Methyl Orange
+        if (testedState.A.H2SO4 && testedState.A.NaOH) {
+          liquid.setAttribute('fill', '#ef4444'); // Acid red
+          note.innerText = 'Ủa, acid nó hóa đỏ mà base nó chuyển vàng 😳';
+        } else if (testedState.A.H2SO4) {
+          liquid.setAttribute('fill', '#ef4444');
+          note.innerText = 'Chuyển màu đỏ rồi nè!';
+        } else if (testedState.A.NaOH) {
+          liquid.setAttribute('fill', '#eab308');
+          note.innerText = 'Chuyển màu vàng rồi!';
+        }
+      } else if (beaker === 'B') {
+        // Special Solution
+        liquid.setAttribute('fill', '#e2e8f0'); // Clear/No change
+        if (testedState.B.H2SO4 || testedState.B.NaOH) {
+          note.innerText = 'Nó không đổi màu kìa, lạ he, lạ he';
+        }
+      } else if (beaker === 'C') {
+        // Phenolphthalein
+        if (testedState.C.NaOH) {
+          liquid.setAttribute('fill', '#f43f5e'); // Pink
+          note.innerText = 'Hình như nó gặp base chuyển hồng, còn acid thì không';
+        } else if (testedState.C.H2SO4) {
+          liquid.setAttribute('fill', '#e2e8f0');
+          note.innerText = 'Không thấy đổi màu gì hết...';
+        }
+      }
+    }
+
+    function checkAllTested() {
+      const allTested = ['A', 'B', 'C'].every(b => testedState[b].H2SO4 && testedState[b].NaOH);
+      if (allTested) {
+        document.getElementById('guess-master-container').classList.add('visible');
+        document.getElementById('guess-A').style.display = 'inline-block';
+        document.getElementById('guess-B').style.display = 'inline-block';
+        document.getElementById('guess-C').style.display = 'inline-block';
+      }
+    }
+
+    function makeGuess(beaker) {
+      if (beaker === 'B') {
+        // Correct Choice
+        showModal(
+          'Tui cũng nghĩ bình này nè, mà không biết có phải không, hay Bình nhấn nút ở dưới thử i',
+          'Chọn đúng ròiii 💖',
+          () => {
+            closeModal();
+            goToScreen('screen-letter');
+          }
+        );
+      } else {
+        // Wrong Choice
+        wrongAttempts++;
+        document.getElementById(`card-${beaker}`).classList.add('disabled');
+        document.getElementById(`guess-${beaker}`).style.display = 'none';
+
+        if (wrongAttempts === 1) {
+          showModal(
+            'Hình như chưa chính xác lắm thì phải...',
+            'Còn 1 lần chọn nữa thoi đóo',
+            closeModal
+          );
+        } else if (wrongAttempts === 2) {
+          showModal(
+            'Ay da, hình như nó vẫn cứ ấy ấy kiểu gì í, thoi 1 lượt nữa i nhaa',
+            'Cho 1 cơ hội nữa thoi í nha',
+            closeModal
+          );
+        }
+      }
+    }
+
+    function showModal(text, btnText, callback) {
+      document.getElementById('modal-text').innerText = text;
+      const btn = document.getElementById('modal-btn');
+      btn.innerText = btnText;
+      btn.onclick = callback;
+      document.getElementById('modal').classList.add('active');
+    }
+
+    function closeModal() {
+      document.getElementById('modal').classList.remove('active');
+    }
+  </script>
+</body>
+</html>
