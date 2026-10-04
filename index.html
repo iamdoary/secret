@@ -847,7 +847,8 @@ Cuối cùng… chúc bạn nhỏ đang đọc những lời này có một ngà
 
     function showModal(text, btnText, callback) {
       document.getElementById('modal-text').innerText = text;
-      const btn.innerText = btnText;
+      const btn = document.getElementById('modal-btn');
+      btn.innerText = btnText;
       btn.onclick = callback;
       document.getElementById('modal').classList.add('active');
     }
