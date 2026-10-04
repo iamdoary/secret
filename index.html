@@ -61,13 +61,14 @@
       overflow: hidden;
     }
 
-    /* Ngôi sao lấp lánh nổi mượt mà & phân bố đều khắp không gian */
+    /* Ngôi sao lấp lánh nổi mượt mà & phân bố đều rộng mở */
     .star-particle {
       position: absolute;
-      background: radial-gradient(circle, #ffffff 0%, rgba(236, 72, 153, 0.85) 50%, transparent 100%);
+      background: radial-gradient(circle, #ffffff 0%, rgba(236, 72, 153, 0.9) 55%, transparent 100%);
       border-radius: 50%;
-      box-shadow: 0 0 8px rgba(236, 72, 153, 0.8), 0 0 16px rgba(56, 189, 248, 0.5);
-      animation: floatStar 7s infinite cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 0 8px rgba(236, 72, 153, 0.8), 0 0 16px rgba(56, 189, 248, 0.6);
+      animation: floatStar 7.5s infinite cubic-bezier(0.4, 0, 0.2, 1);
+      will-change: transform, opacity;
     }
 
     @keyframes floatStar {
@@ -564,7 +565,7 @@ Cuối cùng… chúc bạn nhỏ đang đọc những lời này có một ngà
   </div>
 
   <script>
-    /* Interactive Sparkle Cursor Trail Animation (Tối ưu cho cả PC và Mobile) */
+    /* Interactive Sparkle Cursor Trail Animation */
     const canvas = document.getElementById('cursor-canvas');
     const ctx = canvas.getContext('2d');
     let particles = [];
@@ -639,28 +640,34 @@ Cuối cùng… chúc bạn nhỏ đang đọc những lời này có một ngà
     }
     animateParticles();
 
-    /* PHÂN BỐ NGÔI SAO ĐỀU ĐẶN 100% KHẮP TOÀN BỘ MÀN HÌNH */
+    /* THUẬT TOÁN GRID PHÂN BỐ 100 NGÔI SAO TỎA ĐỀU KHẮP TOÀN BỘ MÀN HÌNH */
     const effectsContainer = document.getElementById('effects-container');
-    const totalStars = 55; // Tăng lượng hạt và phân dải đều chiều ngang/chiều dọc
+    const cols = 10;
+    const rows = 10;
+    const colWidth = 100 / cols; // % chiều ngang mỗi ô
+    const rowHeight = 100 / rows; // % chiều dọc mỗi ô
 
-    for (let i = 0; i < totalStars; i++) {
-      const star = document.createElement('div');
-      star.classList.add('star-particle');
-      
-      const size = Math.random() * 4.5 + 2;
-      star.style.width = `${size}px`;
-      star.style.height = `${size}px`;
-      
-      // Phân bổ ngẫu nhiên từ 0% tới 100% chiều ngang màn hình
-      star.style.left = `${Math.random() * 100}vw`;
-      
-      // Phân bổ vị trí khởi tạo ban đầu dải rải rác chiều dọc
-      star.style.bottom = `${Math.random() * -30 - 10}px`;
-      
-      star.style.animationDuration = `${Math.random() * 3 + 5.5}s`; // Nhịp trôi 5.5s - 8.5s cực mượt
-      star.style.animationDelay = `${Math.random() * 7}s`;
-      
-      effectsContainer.appendChild(star);
+    for (let r = 0; r < rows; r++) {
+      for (let c = 0; c < cols; c++) {
+        const star = document.createElement('div');
+        star.classList.add('star-particle');
+
+        const size = Math.random() * 4.5 + 2;
+        star.style.width = `${size}px`;
+        star.style.height = `${size}px`;
+
+        // Tọa độ tính theo ô lưới + độ ngẫu nhiên tự nhiên
+        const xPos = c * colWidth + Math.random() * (colWidth * 0.85);
+        const yPos = r * rowHeight + Math.random() * (rowHeight * 0.85);
+
+        star.style.left = `${xPos}vw`;
+        star.style.bottom = `${-yPos}px`; // Rải rác điểm xuất phát ban đầu dưới chân trang
+
+        star.style.animationDuration = `${Math.random() * 3 + 5.5}s`;
+        star.style.animationDelay = `${Math.random() * 7}s`;
+
+        effectsContainer.appendChild(star);
+      }
     }
 
     /* Lab Logic & State Management */
