@@ -49,7 +49,7 @@
       z-index: 9999;
     }
 
-    /* Container hiệu ứng nền */
+    /* Khung chứa các hiệu ứng nền bầu trời đêm */
     .bg-effects {
       position: fixed;
       top: 0;
@@ -61,34 +61,67 @@
       overflow: hidden;
     }
 
-    /* Tinh thể / Ngôi sao lấp lánh nổi mượt mà & đều đặn */
-    .star-particle {
+    /* 1. Ngôi sao nhấp nháy dịu nhẹ đứng yên */
+    .twinkle-star {
       position: absolute;
-      bottom: -30px;
-      background: radial-gradient(circle, #ffffff 0%, rgba(236, 72, 153, 0.8) 50%, transparent 100%);
+      background: #ffffff;
       border-radius: 50%;
-      box-shadow: 0 0 10px rgba(236, 72, 153, 0.8), 0 0 20px rgba(56, 189, 248, 0.5);
-      animation: floatStar 7s infinite cubic-bezier(0.4, 0, 0.2, 1);
+      box-shadow: 0 0 6px rgba(255, 255, 255, 0.8), 0 0 12px rgba(236, 72, 153, 0.5);
+      animation: starFade 4s infinite ease-in-out;
     }
 
-    @keyframes floatStar {
+    @keyframes starFade {
+      0%, 100% { opacity: 0; transform: scale(0.3); }
+      50% { opacity: 0.85; transform: scale(1); }
+    }
+
+    /* 2. Vệt Sao Băng bay chéo 45 độ */
+    .shooting-star {
+      position: absolute;
+      height: 2px;
+      background: linear-gradient(-45deg, rgba(236, 72, 153, 1), rgba(56, 189, 248, 0));
+      filter: drop-shadow(0 0 6px #ec4899);
+      animation: meteorShoot 1.8s cubic-bezier(0.25, 1, 0.5, 1) forwards;
+      opacity: 0;
+    }
+
+    @keyframes meteorShoot {
       0% {
-        transform: translateY(0) scale(0.4);
+        width: 0px;
         opacity: 0;
+        transform: translate(0, 0) rotate(-45deg);
       }
       20% {
-        opacity: 0.9;
-      }
-      80% {
-        opacity: 0.7;
+        width: 120px;
+        opacity: 1;
       }
       100% {
-        transform: translateY(-110vh) scale(1);
+        width: 0px;
         opacity: 0;
+        transform: translate(-450px, 450px) rotate(-45deg);
       }
     }
 
-    /* Luồng hào quang bồng bềnh dưới chân trang */
+    /* 3. Chữ "Bình ✨" hiện dịu nhẹ ở đuôi sao băng */
+    .meteor-text {
+      position: absolute;
+      color: #f8fafc;
+      font-weight: 800;
+      font-size: 1.1rem;
+      text-shadow: 0 0 10px #ec4899, 0 0 20px #38bdf8;
+      pointer-events: none;
+      animation: nameGlow 2.5s ease-out forwards;
+      letter-spacing: 1px;
+    }
+
+    @keyframes nameGlow {
+      0% { opacity: 0; transform: scale(0.7) translateY(-5px); }
+      25% { opacity: 1; transform: scale(1) translateY(0); }
+      75% { opacity: 0.8; }
+      100% { opacity: 0; transform: scale(1.05) translateY(8px); }
+    }
+
+    /* Quầng sáng nền lab nhẹ nhàng */
     .chem-glow {
       position: absolute;
       bottom: -120px;
@@ -96,7 +129,7 @@
       transform: translateX(-50%);
       width: 110vw;
       height: 300px;
-      background: radial-gradient(ellipse at center, rgba(236, 72, 153, 0.15) 0%, rgba(56, 189, 248, 0.08) 45%, transparent 75%);
+      background: radial-gradient(ellipse at center, rgba(236, 72, 153, 0.12) 0%, rgba(56, 189, 248, 0.06) 45%, transparent 75%);
       filter: blur(50px);
       animation: pulseGlow 7s infinite alternate ease-in-out;
       pointer-events: none;
@@ -104,7 +137,7 @@
 
     @keyframes pulseGlow {
       0% { opacity: 0.4; transform: translateX(-50%) scale(0.95); }
-      100% { opacity: 0.95; transform: translateX(-50%) scale(1.05); }
+      100% { opacity: 0.9; transform: translateX(-50%) scale(1.05); }
     }
 
     .container {
@@ -429,7 +462,7 @@
   <!-- Interactive Sparkle Cursor Canvas -->
   <canvas id="cursor-canvas"></canvas>
 
-  <!-- Background Glowing Stars & Effects -->
+  <!-- Background Effects Container -->
   <div class="bg-effects" id="effects-container">
     <div class="chem-glow"></div>
   </div>
@@ -635,19 +668,51 @@ Cuối cùng… chúc bạn nhỏ đang đọc những lời này có một ngà
     }
     animateParticles();
 
-    /* TẠO CÁC NGÔI SAO LẤP LÁNH NỔI MƯỢT VÀ ĐỀU ĐẶN */
+    /* 1. TẠO 40 NGÔI SAO ĐỨNG YÊN NHẤP NHÁY ẨN HIỆN DỊU NHẸ */
     const effectsContainer = document.getElementById('effects-container');
-    for (let i = 0; i < 30; i++) {
+    for (let i = 0; i < 40; i++) {
       const star = document.createElement('div');
-      star.classList.add('star-particle');
-      const size = Math.random() * 6 + 3;
+      star.classList.add('twinkle-star');
+      const size = Math.random() * 4 + 2;
       star.style.width = `${size}px`;
       star.style.height = `${size}px`;
       star.style.left = `${Math.random() * 100}%`;
-      star.style.animationDuration = `${Math.random() * 2 + 6}s`; // Khoảng thời gian từ 6s - 8s mượt mà
-      star.style.animationDelay = `${Math.random() * 5}s`;
+      star.style.top = `${Math.random() * 100}%`;
+      star.style.animationDuration = `${Math.random() * 3 + 3}s`;
+      star.style.animationDelay = `${Math.random() * 4}s`;
       effectsContainer.appendChild(star);
     }
+
+    /* 2. TẠO MƯA SAO BĂNG THI THỎANG BAY CHÉO VÀ ĐỂ LẠI TÊN "BÌNH ✨" */
+    function spawnShootingStar() {
+      const startX = Math.random() * (window.innerWidth * 0.7) + (window.innerWidth * 0.2);
+      const startY = Math.random() * (window.innerHeight * 0.4);
+
+      const star = document.createElement('div');
+      star.classList.add('shooting-star');
+      star.style.left = `${startX}px`;
+      star.style.top = `${startY}px`;
+      effectsContainer.appendChild(star);
+
+      /* Đuôi sao băng để lại dòng chữ "Bình ✨" */
+      setTimeout(() => {
+        const nameTag = document.createElement('div');
+        nameTag.classList.add('meteor-text');
+        nameTag.innerText = 'Bình ✨';
+        nameTag.style.left = `${startX - 60}px`;
+        nameTag.style.top = `${startY + 60}px`;
+        effectsContainer.appendChild(nameTag);
+
+        setTimeout(() => nameTag.remove(), 2500);
+      }, 700);
+
+      setTimeout(() => star.remove(), 2000);
+    }
+
+    /* Tần suất xuất hiện sao băng mỗi 6 - 9 giây ngẫu nhiên */
+    setInterval(() => {
+      spawnShootingStar();
+    }, Math.random() * 3000 + 6000);
 
     /* Lab Logic & State Management */
     let selectedReagent = null;
