@@ -49,46 +49,45 @@
       z-index: 9999;
     }
 
-    /* Container hiệu ứng nền */
+    /* Khung chứa các hiệu ứng nền */
     .bg-effects {
       position: fixed;
       top: 0;
       left: 0;
-      width: 100%;
-      height: 100%;
+      width: 100vw;
+      height: 100vh;
       z-index: 0;
       pointer-events: none;
       overflow: hidden;
     }
 
-    /* Ngôi sao lấp lánh nổi mượt mà & đều đặn */
+    /* Ngôi sao lấp lánh nổi mượt mà & phân bố đều khắp không gian */
     .star-particle {
       position: absolute;
-      bottom: -30px;
-      background: radial-gradient(circle, #ffffff 0%, rgba(236, 72, 153, 0.8) 50%, transparent 100%);
+      background: radial-gradient(circle, #ffffff 0%, rgba(236, 72, 153, 0.85) 50%, transparent 100%);
       border-radius: 50%;
-      box-shadow: 0 0 10px rgba(236, 72, 153, 0.8), 0 0 20px rgba(56, 189, 248, 0.5);
+      box-shadow: 0 0 8px rgba(236, 72, 153, 0.8), 0 0 16px rgba(56, 189, 248, 0.5);
       animation: floatStar 7s infinite cubic-bezier(0.4, 0, 0.2, 1);
     }
 
     @keyframes floatStar {
       0% {
-        transform: translateY(0) scale(0.4);
+        transform: translateY(0) scale(0.3);
         opacity: 0;
       }
       20% {
         opacity: 0.9;
       }
       80% {
-        opacity: 0.7;
+        opacity: 0.75;
       }
       100% {
-        transform: translateY(-110vh) scale(1);
+        transform: translateY(-115vh) scale(1);
         opacity: 0;
       }
     }
 
-    /* Luồng hào quang bồng bềnh dưới chân trang */
+    /* Quầng sáng nền lab bồng bềnh nhẹ nhàng */
     .chem-glow {
       position: absolute;
       bottom: -120px;
@@ -112,6 +111,7 @@
       max-width: 800px;
       background: var(--card-bg);
       backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
       border-radius: 28px;
       padding: 32px 24px;
       box-shadow: 0 20px 50px rgba(0, 0, 0, 0.5), 0 0 30px rgba(236, 72, 153, 0.2);
@@ -181,6 +181,7 @@
       box-shadow: 0 0 20px rgba(236, 72, 153, 0.4);
       position: relative;
       overflow: hidden;
+      touch-action: manipulation;
     }
 
     .btn:hover {
@@ -210,6 +211,7 @@
       font-size: 0.95rem;
       color: var(--text);
       transition: all 0.25s ease;
+      touch-action: manipulation;
     }
 
     .reagent-btn.selected {
@@ -275,6 +277,7 @@
       margin-bottom: 12px;
       transition: transform 0.3s ease;
       filter: drop-shadow(0 12px 15px rgba(0, 0, 0, 0.5));
+      touch-action: manipulation;
     }
 
     .flask:hover {
@@ -346,6 +349,7 @@
       bottom: 0;
       background: rgba(0, 0, 0, 0.75);
       backdrop-filter: blur(8px);
+      -webkit-backdrop-filter: blur(8px);
       display: none;
       justify-content: center;
       align-items: center;
@@ -560,7 +564,7 @@ Cuối cùng… chúc bạn nhỏ đang đọc những lời này có một ngà
   </div>
 
   <script>
-    /* Interactive Sparkle Cursor Trail Animation */
+    /* Interactive Sparkle Cursor Trail Animation (Tối ưu cho cả PC và Mobile) */
     const canvas = document.getElementById('cursor-canvas');
     const ctx = canvas.getContext('2d');
     let particles = [];
@@ -607,7 +611,7 @@ Cuối cùng… chúc bạn nhỏ đang đọc những lời này có một ngà
           particles.push(new Particle(e.touches[0].clientX, e.touches[0].clientY));
         }
       }
-    });
+    }, { passive: true });
 
     window.addEventListener('mousemove', (e) => {
       for (let i = 0; i < 2; i++) {
@@ -635,17 +639,27 @@ Cuối cùng… chúc bạn nhỏ đang đọc những lời này có một ngà
     }
     animateParticles();
 
-    /* TẠO CÁC NGÔI SAO LẤP LÁNH NỔI MƯỢT VÀ ĐỀU ĐẶN NỀN LAB */
+    /* PHÂN BỐ NGÔI SAO ĐỀU ĐẶN 100% KHẮP TOÀN BỘ MÀN HÌNH */
     const effectsContainer = document.getElementById('effects-container');
-    for (let i = 0; i < 50; i++) {
+    const totalStars = 55; // Tăng lượng hạt và phân dải đều chiều ngang/chiều dọc
+
+    for (let i = 0; i < totalStars; i++) {
       const star = document.createElement('div');
       star.classList.add('star-particle');
-      const size = Math.random() * 5 + 2.5;
+      
+      const size = Math.random() * 4.5 + 2;
       star.style.width = `${size}px`;
       star.style.height = `${size}px`;
-      star.style.left = `${Math.random() * 100}%`;
-      star.style.animationDuration = `${Math.random() * 2 + 6}s`; // Khoảng 6s - 8s cực kỳ mượt mắt
-      star.style.animationDelay = `${Math.random() * 6}s`;
+      
+      // Phân bổ ngẫu nhiên từ 0% tới 100% chiều ngang màn hình
+      star.style.left = `${Math.random() * 100}vw`;
+      
+      // Phân bổ vị trí khởi tạo ban đầu dải rải rác chiều dọc
+      star.style.bottom = `${Math.random() * -30 - 10}px`;
+      
+      star.style.animationDuration = `${Math.random() * 3 + 5.5}s`; // Nhịp trôi 5.5s - 8.5s cực mượt
+      star.style.animationDelay = `${Math.random() * 7}s`;
+      
       effectsContainer.appendChild(star);
     }
 
