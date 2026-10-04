@@ -49,8 +49,8 @@
       z-index: 9999;
     }
 
-    /* Khung chứa các hiệu ứng nền Lab */
-    .bg-bubbles {
+    /* Container chứa các hiệu ứng nền mới */
+    .bg-effects {
       position: fixed;
       top: 0;
       left: 0;
@@ -61,54 +61,54 @@
       overflow: hidden;
     }
 
-    /* Bong bóng hóa học 3D nổi lăn tăn */
-    .bubble {
+    /* Tinh thể / Ngôi sao lấp lánh bồng bềnh nhẹ nhàng */
+    .star-particle {
       position: absolute;
-      bottom: -80px;
-      background: radial-gradient(circle at 30% 30%, rgba(255, 255, 255, 0.8), rgba(236, 72, 153, 0.4) 60%, rgba(56, 189, 248, 0.2) 100%);
-      border: 1px solid rgba(255, 255, 255, 0.4);
-      box-shadow: 0 0 12px rgba(236, 72, 153, 0.3), inset 0 0 8px rgba(255, 255, 255, 0.5);
+      bottom: -30px;
+      background: radial-gradient(circle, #ffffff 0%, rgba(236, 72, 153, 0.8) 50%, transparent 100%);
       border-radius: 50%;
-      animation: floatUp 7s infinite ease-in-out;
+      box-shadow: 0 0 10px rgba(236, 72, 153, 0.8), 0 0 20px rgba(56, 189, 248, 0.5);
+      animation: floatStar 9s infinite ease-in-out;
     }
 
-    @keyframes floatUp {
+    @keyframes floatStar {
       0% {
-        transform: translateY(0) translateX(0) scale(0.5);
+        transform: translateY(0) scale(0.4) rotate(0deg);
         opacity: 0;
       }
-      20% {
-        opacity: 0.85;
+      25% {
+        opacity: 0.9;
       }
       50% {
-        transform: translateY(-50vh) translateX(25px) scale(1.1);
-      }
-      80% {
+        transform: translateY(-55vh) scale(1.1) rotate(180deg);
         opacity: 0.7;
       }
+      75% {
+        opacity: 0.8;
+      }
       100% {
-        transform: translateY(-115vh) translateX(-20px) scale(1.4);
+        transform: translateY(-110vh) scale(0.5) rotate(360deg);
         opacity: 0;
       }
     }
 
-    /* Hiệu ứng khói / luồng hơi tỏa sáng phòng thí nghiệm */
+    /* Luồng hào quang huyền ảo dưới chân trang */
     .chem-glow {
       position: absolute;
-      bottom: -150px;
+      bottom: -120px;
       left: 50%;
       transform: translateX(-50%);
-      width: 120vw;
-      height: 350px;
-      background: radial-gradient(ellipse at center, rgba(236, 72, 153, 0.18) 0%, rgba(56, 189, 248, 0.12) 40%, transparent 75%);
-      filter: blur(40px);
-      animation: pulseGlow 6s infinite alternate ease-in-out;
+      width: 110vw;
+      height: 300px;
+      background: radial-gradient(ellipse at center, rgba(236, 72, 153, 0.15) 0%, rgba(56, 189, 248, 0.08) 45%, transparent 75%);
+      filter: blur(50px);
+      animation: pulseGlow 7s infinite alternate ease-in-out;
       pointer-events: none;
     }
 
     @keyframes pulseGlow {
-      0% { opacity: 0.5; transform: translateX(-50%) scale(0.95); }
-      100% { opacity: 1; transform: translateX(-50%) scale(1.08); }
+      0% { opacity: 0.4; transform: translateX(-50%) scale(0.95); }
+      100% { opacity: 0.95; transform: translateX(-50%) scale(1.05); }
     }
 
     .container {
@@ -433,8 +433,8 @@
   <!-- Interactive Sparkle Cursor Canvas -->
   <canvas id="cursor-canvas"></canvas>
 
-  <!-- Background Floating Bubbles & Lab Steam -->
-  <div class="bg-bubbles" id="bubbles-container">
+  <!-- Background Glowing Stars & Effects -->
+  <div class="bg-effects" id="effects-container">
     <div class="chem-glow"></div>
   </div>
 
@@ -639,18 +639,18 @@ Cuối cùng… chúc bạn nhỏ đang đọc những lời này có một ngà
     }
     animateParticles();
 
-    /* TẠO 50 BONG BÓNG HÓA HỌC SÔI NỔI NỀN LAB */
-    const bubblesContainer = document.getElementById('bubbles-container');
-    for (let i = 0; i < 50; i++) {
-      const bubble = document.createElement('div');
-      bubble.classList.add('bubble');
-      const size = Math.random() * 32 + 8;
-      bubble.style.width = `${size}px`;
-      bubble.style.height = `${size}px`;
-      bubble.style.left = `${Math.random() * 100}%`;
-      bubble.style.animationDuration = `${Math.random() * 7 + 5}s`;
-      bubble.style.animationDelay = `${Math.random() * 6}s`;
-      bubblesContainer.appendChild(bubble);
+    /* TẠO CÁC HẠT TINH THỂ VÀ NGÔI SAO LẤP LÁNH NỀN */
+    const effectsContainer = document.getElementById('effects-container');
+    for (let i = 0; i < 35; i++) {
+      const star = document.createElement('div');
+      star.classList.add('star-particle');
+      const size = Math.random() * 8 + 3;
+      star.style.width = `${size}px`;
+      star.style.height = `${size}px`;
+      star.style.left = `${Math.random() * 100}%`;
+      star.style.animationDuration = `${Math.random() * 8 + 6}s`;
+      star.style.animationDelay = `${Math.random() * 5}s`;
+      effectsContainer.appendChild(star);
     }
 
     /* Lab Logic & State Management */
