@@ -61,7 +61,7 @@
       overflow: hidden;
     }
 
-    /* Ngôi sao lấp lánh nổi mượt mà & phát sáng rực rỡ như ban đầu */
+    /* Ngôi sao lấp lánh nổi mượt mà & phát sáng rực rỡ */
     .star-particle {
       position: absolute;
       background: radial-gradient(circle, #ffffff 0%, rgba(236, 72, 153, 0.9) 55%, transparent 100%);
@@ -568,7 +568,7 @@ Cuối cùng… chúc bạn nhỏ đang đọc những lời này có một ngà
   </div>
 
   <script>
-    /* Interactive Sparkle Cursor Trail Animation (Khôi phục hạt lấp lánh & nổ bùng như ban đầu) */
+    /* Interactive Sparkle Cursor Trail Animation */
     const canvas = document.getElementById('cursor-canvas');
     const ctx = canvas.getContext('2d');
     let particles = [];
@@ -643,7 +643,7 @@ Cuối cùng… chúc bạn nhỏ đang đọc những lời này có một ngà
     }
     animateParticles();
 
-    /* THUẬT TOÁN GRID PHÂN BỐ 100 NGÔI SAO TỎA ĐỀU LUNG LINH BẬC NHẤT BAN ĐẦU */
+    /* THUẬT TOÁN GRID PHÂN BỐ 100 NGÔI SAO TỎA ĐỀU LUNG LINH */
     const effectsContainer = document.getElementById('effects-container');
     const cols = 10;
     const rows = 10;
@@ -698,8 +698,9 @@ Cuối cùng… chúc bạn nhỏ đang đọc những lời này có một ngà
     }
 
     function testBeaker(beaker) {
+      /* CẬP NHẬT DÒNG THÔNG BÁO THEO YÊU CẦU */
       if (!selectedReagent) {
-        alert('Vui lòng chọn thuốc thử (H2SO4 hoặc NaOH) trước nha!');
+        alert('Bình chọn thuốc thử trước ròi mí nhấn vào các bình làm thí nghiệm để xem hiện tượng nha.');
         return;
       }
 
