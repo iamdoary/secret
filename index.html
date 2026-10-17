@@ -121,6 +121,44 @@
       margin: auto;
     }
 
+    /* NÚT TRANG CHỦ HÌNH NGÔI SAO TỎA SÁNG */
+    .home-star-btn {
+      position: absolute;
+      top: 20px;
+      left: 20px;
+      width: 44px;
+      height: 44px;
+      border-radius: 50%;
+      background: rgba(15, 23, 42, 0.75);
+      border: 1.5px solid rgba(236, 72, 153, 0.5);
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      cursor: pointer;
+      z-index: 10;
+      transition: all 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+      box-shadow: 0 0 15px rgba(236, 72, 153, 0.3), inset 0 0 10px rgba(236, 72, 153, 0.2);
+      touch-action: manipulation;
+    }
+
+    .home-star-btn svg {
+      width: 22px;
+      height: 22px;
+      fill: url(#starGrad);
+      filter: drop-shadow(0 0 6px rgba(236, 72, 153, 0.8));
+      transition: transform 0.3s ease;
+    }
+
+    .home-star-btn:hover, .home-star-btn:active {
+      transform: scale(1.12) rotate(12deg);
+      border-color: #ec4899;
+      box-shadow: 0 0 25px rgba(236, 72, 153, 0.7), inset 0 0 12px rgba(56, 189, 248, 0.4);
+    }
+
+    .home-star-btn:active svg {
+      transform: scale(0.9);
+    }
+
     .screen {
       display: none;
       flex-direction: column;
@@ -404,6 +442,17 @@
     @media (max-width: 640px) {
       .container {
         padding: 24px 16px;
+        padding-top: 60px;
+      }
+      .home-star-btn {
+        top: 14px;
+        left: 14px;
+        width: 38px;
+        height: 38px;
+      }
+      .home-star-btn svg {
+        width: 18px;
+        height: 18px;
       }
       h2 {
         font-size: 1.5rem !important;
@@ -443,6 +492,20 @@
   </div>
 
   <div class="container">
+    <!-- Nút Home Hình Ngôi Sao Lấp Lánh -->
+    <button class="home-star-btn" onclick="resetAndGoHome()" title="Trở về Trang Chủ">
+      <svg viewBox="0 0 24 24">
+        <defs>
+          <linearGradient id="starGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+            <stop offset="0%" stop-color="#ec4899" />
+            <stop offset="50%" stop-color="#f43f5e" />
+            <stop offset="100%" stop-color="#38bdf8" />
+          </linearGradient>
+        </defs>
+        <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"/>
+      </svg>
+    </button>
+
     <!-- Intro Screen 1 -->
     <div id="screen-intro-1" class="screen active">
       <h2 style="font-size: 1.8rem; color: var(--primary);">Phòng Thí Nghiệm 🧪✨</h2>
@@ -687,6 +750,38 @@ Cuối cùng… chúc bạn nhỏ đang đọc những lời này có một ngà
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
+    /* Reset toàn bộ bài thí nghiệm khi nhấn nút Ngôi Sao Trang Chủ */
+    function resetAndGoHome() {
+      selectedReagent = null;
+      wrongAttempts = 0;
+      testedState = {
+        A: { H2SO4: false, NaOH: false },
+        B: { H2SO4: false, NaOH: false },
+        C: { H2SO4: false, NaOH: false }
+      };
+
+      document.getElementById('btn-h2so4').classList.remove('selected');
+      document.getElementById('btn-naoh').classList.remove('selected');
+
+      ['A', 'B', 'C'].forEach(beaker => {
+        const liquid = document.getElementById(`liquid-${beaker}`);
+        const liquidTop = document.getElementById(`liquid-top-${beaker}`);
+        const note = document.getElementById(`note-${beaker}`);
+        const card = document.getElementById(`card-${beaker}`);
+        const guessBtn = document.getElementById(`guess-${beaker}`);
+
+        if (liquid) liquid.setAttribute('fill', '#334155');
+        if (liquidTop) liquidTop.setAttribute('fill', '#475569');
+        if (note) note.innerText = 'Chưa thử thuốc thử nào';
+        if (card) card.classList.remove('disabled');
+        if (guessBtn) guessBtn.style.display = 'none';
+      });
+
+      document.getElementById('guess-master-container').classList.remove('visible');
+      closeModal();
+      goToScreen('screen-intro-1');
+    }
+
     function startLab() {
       goToScreen('screen-lab');
     }
@@ -737,7 +832,6 @@ Cuối cùng… chúc bạn nhỏ đang đọc những lời này có một ngà
           topColor = '#fde047';
         }
 
-        /* CẬP NHẬT LỜI THOẠI BÌNH A KHI THÊM CẢ 2 THUỐC THỬ */
         if (testedState.A.H2SO4 && testedState.A.NaOH) {
           note.innerText = 'Thêm cả acid với base vô nó đổi màu hết luôn í, hình như...';
         } else if (testedState.A.H2SO4) {
@@ -770,7 +864,6 @@ Cuối cùng… chúc bạn nhỏ đang đọc những lời này có một ngà
         } else if (testedState.C.NaOH) {
           note.innerText = 'Quào, tự nhiên gặp base cái nó đổi thành màu hồng liền lun. Hay vạii';
         } else if (testedState.C.H2SO4) {
-          /* CẬP NHẬT LỜI THOẠI BÌNH C KHI THÊM ACID */
           note.innerText = 'Hình như là nó không đổi màu hay sao í, nếu thay bằng base thì sao he';
         }
       }
