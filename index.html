@@ -503,7 +503,7 @@
           <button id="guess-A" class="btn" style="display:none; margin-top:12px; padding: 8px 16px; font-size: 0.85rem;" onclick="makeGuess('A')">Chọn bình này</button>
         </div>
 
-        <!-- Beaker B -->
+        <!-- Beaker B (Special Solution) -->
         <div id="card-B" class="beaker-card">
           <div class="beaker-label">Bình B</div>
           <div class="flask" onclick="testBeaker('B')">
@@ -698,7 +698,6 @@ Cuối cùng… chúc bạn nhỏ đang đọc những lời này có một ngà
     }
 
     function testBeaker(beaker) {
-      /* CẬP NHẬT DÒNG THÔNG BÁO THEO Ý BẠN */
       if (!selectedReagent) {
         alert('Bình chọn thuốc thử trước (H2SO4 hoặc NaOH) ròi mí nhấn vào các bình ở dưới để xem hiện tượng nhaa');
         return;
@@ -746,10 +745,16 @@ Cuối cùng… chúc bạn nhỏ đang đọc những lời này có một ngà
           note.innerText = 'Úi, cho base vô thì nó chuyển vàng nè';
         }
       } else if (beaker === 'B') {
+        /* CẬP NHẬT LỜI THOẠI BÌNH B THEO ĐÚNG Ý BẠN */
         fillColor = '#334155';
         topColor = '#475569';
-        if (testedState.B.H2SO4 || testedState.B.NaOH) {
-          note.innerText = 'Nó không đổi màu kìa, lạ he, lạ he';
+
+        if (testedState.B.H2SO4 && testedState.B.NaOH) {
+          note.innerText = 'Quào, cho 2 vào thì nó không hiện tượng hết luôn, có khi nào...';
+        } else if (testedState.B.NaOH) {
+          note.innerText = 'Cho NaOH vào nó không đổi màu kìa, hay Bình thử cho nốt cái kia vào thử';
+        } else if (testedState.B.H2SO4) {
+          note.innerText = 'Acid nó không đổi màu kìa, còn base thì sao ta';
         }
       } else if (beaker === 'C') {
         if (currentReagent === 'NaOH') {
