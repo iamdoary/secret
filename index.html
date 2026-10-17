@@ -503,7 +503,7 @@
           <button id="guess-A" class="btn" style="display:none; margin-top:12px; padding: 8px 16px; font-size: 0.85rem;" onclick="makeGuess('A')">Chọn bình này</button>
         </div>
 
-        <!-- Beaker B (Special Solution) -->
+        <!-- Beaker B -->
         <div id="card-B" class="beaker-card">
           <div class="beaker-label">Bình B</div>
           <div class="flask" onclick="testBeaker('B')">
@@ -737,15 +737,15 @@ Cuối cùng… chúc bạn nhỏ đang đọc những lời này có một ngà
           topColor = '#fde047';
         }
 
+        /* CẬP NHẬT LỜI THOẠI BÌNH A KHI THÊM CẢ 2 THUỐC THỬ */
         if (testedState.A.H2SO4 && testedState.A.NaOH) {
-          note.innerText = 'Ủa, acid nó hóa đỏ mà base nó chuyển vàng 😳';
+          note.innerText = 'Thêm cả acid với base vô nó đổi màu hết luôn í, hình như...';
         } else if (testedState.A.H2SO4) {
           note.innerText = 'Ủa, gặp acid thì nó chuyển đỏ, hay Bình cho base vào coi nó có hiện tượng gì hong. Thử iii';
         } else if (testedState.A.NaOH) {
           note.innerText = 'Úi, cho base vô thì nó chuyển vàng nè';
         }
       } else if (beaker === 'B') {
-        /* CẬP NHẬT LỜI THOẠI BÌNH B THEO ĐÚNG Ý BẠN */
         fillColor = '#334155';
         topColor = '#475569';
 
@@ -770,7 +770,8 @@ Cuối cùng… chúc bạn nhỏ đang đọc những lời này có một ngà
         } else if (testedState.C.NaOH) {
           note.innerText = 'Quào, tự nhiên gặp base cái nó đổi thành màu hồng liền lun. Hay vạii';
         } else if (testedState.C.H2SO4) {
-          note.innerText = 'Sao bình A đổi mà bình này không thấy ta. Nếu thay bằng base thì sao nhở';
+          /* CẬP NHẬT LỜI THOẠI BÌNH C KHI THÊM ACID */
+          note.innerText = 'Hình như là nó không đổi màu hay sao í, nếu thay bằng base thì sao he';
         }
       }
 
