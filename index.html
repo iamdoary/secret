@@ -744,9 +744,28 @@ Cuối cùng… chúc bạn nhỏ đang đọc những lời này có một ngà
     };
     let wrongAttempts = 0;
 
+    /* TÍNH NĂNG QUAY LẠI TRANG BẰNG NÚT BACK TRÌNH DUYỆT / ĐIỆN THOẠI */
+    history.replaceState({ screenId: 'screen-intro-1' }, '', '');
+
+    window.addEventListener('popstate', (event) => {
+      if (event.state && event.state.screenId) {
+        showScreenDirectly(event.state.screenId);
+      } else {
+        showScreenDirectly('screen-intro-1');
+      }
+    });
+
     function goToScreen(screenId) {
+      history.pushState({ screenId: screenId }, '', '');
+      showScreenDirectly(screenId);
+    }
+
+    function showScreenDirectly(screenId) {
       document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
-      document.getElementById(screenId).classList.add('active');
+      const target = document.getElementById(screenId);
+      if (target) {
+        target.classList.add('active');
+      }
       window.scrollTo({ top: 0, behavior: 'smooth' });
     }
 
